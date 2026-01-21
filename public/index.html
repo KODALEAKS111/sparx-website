@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>Homework Completer</title>
+  <meta name="description" content="Submit your homework platform details. Requests are forwarded for processing." />
+  <meta name="theme-color" content="#0b1020" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Homework Completer" />
+  <meta property="og:description" content="Submit your homework platform details. Requests are forwarded for processing." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="/" />
+
+  <link rel="preload" href="styles.css" as="style" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* Replace default blue focus ring with a theme glow */
+    :focus { outline: none; }
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 6px rgba(255,105,180,.14);
+      border-radius: 12px;
+    }
+
+    /* Minimal form styling inside your theme */
+    .intakeForm { display: grid; gap: 12px; margin-top: 12px; }
+    .intakeRow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 980px) { .intakeRow { grid-template-columns: 1fr; } }
+
+    .fld label {
+      display: block;
+      font-size: 12px;
+      color: rgba(255,233,244,.72);
+      margin: 0 0 6px;
+      font-weight: 850;
+      letter-spacing: .2px;
+      text-transform: none;
+    }
+    .fld .req { opacity: .9; }
+
+    .fld input, .fld select {
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(7,10,20,.30);
+      color: rgba(255,255,255,.92);
+      outline: none;
+    }
+    .fld input::placeholder { color: rgba(255,255,255,.45); }
+
+    .fld input:focus, .fld select:focus {
+      border-color: rgba(180,120,255,.55);              /* slight shift toward purple */
+      box-shadow: 0 0 0 6px rgba(180,120,255,.12);      /* still matches theme */
+    }
+
+    /* Platform preview card */
+    .platformCard {
+      margin-top: 10px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(7,10,20,.22);
+      padding: 12px;
+      display: none;
+    }
+    .platformTop { display:flex; align-items:center; gap:10px; margin-bottom: 10px; }
+    .platformLogo {
+      width: 34px; height: 34px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      object-fit: cover;
+      flex: 0 0 auto;
+    }
+    .platformName { font-weight: 950; margin: 0; line-height: 1.1; }
+    .platformMeta { margin: 2px 0 0; color: rgba(255,233,244,.65); font-size: 12px; line-height: 1.45; }
+
+    .statusChip {
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      font-size: 12px;
+      font-weight: 900;
+      width: fit-content;
+    }
+    .dot2 {
+      width:10px;height:10px;border-radius:50%;
+      background: rgba(60,242,162,.95);
+      box-shadow: 0 0 0 6px rgba(60,242,162,.08);
+    }
+    .dot2.bad {
+      background: rgba(255,110,110,.95);
+      box-shadow: 0 0 0 6px rgba(255,110,110,.08);
+    }
+
+    .submitRow {
+      display:flex; align-items:center; justify-content:space-between;
+      gap: 12px; flex-wrap: wrap; margin-top: 6px;
+    }
+    .miniStatus { color: rgba(255,233,244,.70); font-size: 13px; }
+
+    /* Optional: slightly different chip vibe (still works with your existing chip styles) */
+    .meta-row .chip { border-color: rgba(180,120,255,.22); }
+  </style>
+</head>
+
+<body>
+  <div id="cursorGlow" aria-hidden="true"></div>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="hdr" id="top">
+    <div class="wrap hdr__inner">
+      <a class="brand" href="#top" aria-label="Homework Completer home">
+        <img src="logo.png" width="36" height="36" alt="" class="brand__mark" />
+        <span class="brand__text">Homework <span>Completer</span></span>
+      </a>
+
+      <nav class="nav" aria-label="Primary">
+        <button class="nav__toggle" aria-expanded="false" aria-controls="navmenu">
+          <span class="sr">Toggle navigation</span>
+          <span class="burger" aria-hidden="true"></span>
+        </button>
+
+        <ul class="nav__menu" id="navmenu">
+          <li><a href="#request">Request</a></li>
+          <li><a href="#platforms">Platforms</a></li>
+          <li><a class="btn btn--primary btn--sm" href="#requestForm">Start</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="request">
+      <div class="wrap hero__grid">
+        <div class="hero__copy">
+          <h1>Get homework handled with <span class="grad"><span class="muha-gradient">Homework Completer</span></span>.</h1>
+
+          <p class="lead">
+            Submit your platform details and we’ll queue it up. Keep it simple: <b>name</b>, <b>platform</b>,
+            <b>school</b> (Sparx group), <b>password</b> and <b>username/email</b>.
+          </p>
+
+          <div class="meta-row" aria-label="Highlights">
+            <span class="chip">Quick submit</span>
+            <span class="chip">cheap and affordable (5$ for lifetime auto completor)</span>
+            <span class="chip">Auto completer</span>
+          </div>
+
+          <div class="cta">
+            <a class="btn btn--primary" href="#requestForm">
+              Create Request <span class="btn__sub">Takes 10 seconds</span>
+            </a>
+            <a class="btn btn--ghost" href="#platforms">View Platforms</a>
+          </div>
+
+          <div class="fine">
+            <span class="dot" aria-hidden="true"></span>
+            <span>Requests are forwarded privately for processing.</span>
+          </div>
+        </div>
+
+        <!-- Right panel: the actual form -->
+        <div class="hero__ui" aria-hidden="false">
+          <div class="muha-panel parallax">
+            <div class="muha-panel__top">
+              <div class="muha-panel__title">Request</div>
+              <div class="muha-panel__status"><span class="muha-dot"></span>Open</div>
+            </div>
+
+            <div class="muha-panel__body" id="requestForm">
+              <div class="muha-beta">Homework Request</div>
+              <div class="muha-sub">Fill in the details below and submit.</div>
+
+              <form id="intakeForm" class="intakeForm" autocomplete="off">
+                <!-- Name -->
+                <div class="fld">
+                  <label for="password">Password <span class="req">We need this to log into your account</span></label>
+                  <input id="password" type="text" required placeholder="Your password" />
+                </div>
+
+              <form id="intakeForm" class="intakeForm" autocomplete="off">
+                <!-- Name -->
+                <div class="fld">
+                  <label for="payment">Payment option <span class="req">Card, crypto, paypal or cash (do not enter your banking details)</span></label> <span class="req">5$ for lifetime 1$ for 1 time auto completion</span></label>
+                  <input id="payment" type="text" required placeholder="Card, Cash, paypal or crypto (Lifetime/1time)" />
+                </div>
+
+                <!-- Platform -->
+                <div class="fld">
+                  <label for="platform">Platform <span class="req">*</span></label>
+                  <select id="platform" required>
+                    <option value="" selected disabled>Select a platform</option>
+
+                    <!-- Sparx group -->
+                    <option value="Maths" data-status="working" data-logo="logos/sparx-maths.png">Maths</option>
+                    <option value="Reading" data-status="working" data-logo="logos/sparx-reading.png">Reading</option>
+                    <option value="Science" data-status="working" data-logo="logos/sparx-science.png">Science</option>
+                    <option value="Sparx" data-status="working" data-logo="logos/sparx.png">Sparx</option>
+
+                    <!-- Others -->
+                    <option value="LanguageNut" data-status="working" data-logo="logos/languagenut.png">LanguageNut</option>
+                    <option value="Tassomai" data-status="unstable" data-logo="logos/tassomai.png">Tassomai</option>
+                    <option value="Bedrock" data-status="unstable" data-logo="logos/bedrock.png">Bedrock</option>
+                    <option value="Educake" data-status="working" data-logo="logos/educake.png">Educake</option>
+                    <option value="Century" data-status="working" data-logo="logos/century.png">Century</option>
+                    <option value="Seneca" data-status="working" data-logo="logos/seneca.png">Seneca</option>
+                    <option value="MathsWatch" data-status="unstable" data-logo="logos/mathswatch.png">MathsWatch</option>
+                    <option value="Carousel" data-status="working" data-logo="logos/carousel.png">Carousel</option>
+                  </select>
+
+                  <div class="platformCard" id="platformCard">
+                    <div class="platformTop">
+                      <img id="platformLogo" class="platformLogo" src="logos/default.png" alt="" />
+                      <div>
+                        <p class="platformName" id="platformName">Platform</p>
+                        <p class="platformMeta">Status is shown for quick reference.</p>
+                      </div>
+                    </div>
+                    <div class="statusChip">
+                      <span class="dot2" id="platformDot"></span>
+                      <span id="platformStatusText">Working</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- School (Sparx group only) -->
+                <div class="fld" id="schoolWrap" style="display:none;">
+                  <label for="school">Enter School (Sparx only)</label>
+                  <input id="school" type="text" placeholder="e.g., Lake Road Academy" />
+                </div>
+
+                <div class="intakeRow">
+                  <div class="fld">
+                    <label for="user">Username/Email <span class="req">username for sparx email for google account</span></label>
+                    <input id="user" type="text" required placeholder="johnsmith or john@example.com" />
+                  </div>
+
+                  <div class="fld">
+                    <label for="loginType">Login Type (Optional)</label>
+                    <select id="loginType">
+                      <option value="" selected>Make a selection</option>
+                      <option value="Normal">Normal (if you use username)</option>
+                      <option value="Google">Google</option>
+                      <option value="Microsoft">Microsoft</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="submitRow">
+                  <button class="btn btn--primary btn--sm" type="submit">Submit</button>
+                  <div class="miniStatus" id="miniStatus">Ready.</div>
+                </div>
+              </form>
+
+              <div class="muha-tags muha-tags--single" style="margin-top:12px;">
+                <span class="tag tag--wide">get your homework completed for fast and affordable</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wave" aria-hidden="true"></div>
+    </section>
+
+    <!-- PLATFORMS -->
+    <section class="sec" id="platforms">
+      <div class="wrap">
+        <header class="sec__head">
+          <h2>Supported Platforms</h2>
+          <p>Select a platform in the form to see its status (Working/Unstable).</p>
+        </header>
+
+        <div class="grid feat">
+          <article class="card parallax">
+            <h3>Sparx Group</h3>
+            <p>Maths, Reading, Science, Sparx (School field appears).</p>
+          </article>
+
+          <article class="card parallax">
+            <h3>Working</h3>
+            <p>LanguageNut, Educake, Century, Seneca, Carousel.</p>
+          </article>
+
+          <article class="card parallax">
+            <h3>Unstable</h3>
+            <p>Tassomai, Bedrock, MathsWatch.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="ftr">
+    <div class="wrap ftr__inner">
+      <div class="ftr__left">
+        <div class="brand brand--sm">
+          <img src="logo.png" width="28" height="28" alt="" />
+          <span class="brand__text">Homework <span>Completer</span></span>
+        </div>
+        <p class="muted">© <span id="year"></span> Homework Completer. All rights reserved.</p>
+      </div>
+
+      <div class="ftr__right">
+        <a href="#top">Back to top ↑</a>
+        <a href="#request">Request</a>
+        <a href="#platforms">Platforms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Mobile nav
+    const toggle = document.querySelector('.nav__toggle');
+    const menu = document.getElementById('navmenu');
+    if (toggle && menu) {
+      toggle.addEventListener('click', () => {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        menu.classList.toggle('is-open', !expanded);
+      });
+    }
+
+    // Cursor glow
+    window.addEventListener('mousemove', (e) => {
+      document.documentElement.style.setProperty('--gx', (e.clientX / window.innerWidth) * 100 + '%');
+      document.documentElement.style.setProperty('--gy', (e.clientY / window.innerHeight) * 100 + '%');
+    }, { passive: true });
+
+    // Form logic
+    const form = document.getElementById('intakeForm');
+    const miniStatus = document.getElementById('miniStatus');
+
+    const platformSel = document.getElementById('platform');
+    const schoolWrap = document.getElementById('schoolWrap');
+    const schoolInp = document.getElementById('school');
+
+    const platformCard = document.getElementById('platformCard');
+    const platformLogo = document.getElementById('platformLogo');
+    const platformName = document.getElementById('platformName');
+    const platformDot = document.getElementById('platformDot');
+    const platformStatusText = document.getElementById('platformStatusText');
+
+    const SPARX_GROUP = new Set(["sparx", "maths", "reading", "science"]);
+
+    platformSel.addEventListener('change', () => {
+      const opt = platformSel.selectedOptions[0];
+      const val = (platformSel.value || "").trim();
+      const status = opt?.dataset?.status || "working";
+      const logo = opt?.dataset?.logo || "logos/default.png";
+
+      const isSparx = SPARX_GROUP.has(val.toLowerCase());
+      schoolWrap.style.display = isSparx ? 'block' : 'none';
+      schoolInp.required = false;
+      if (!isSparx) schoolInp.value = "";
+
+      platformCard.style.display = val ? "block" : "none";
+      platformName.textContent = val || "Platform";
+      platformLogo.src = logo;
+      platformLogo.alt = val ? (val + " logo") : "";
+
+      const bad = (status === "unstable");
+      platformDot.classList.toggle('bad', bad);
+      platformStatusText.textContent = bad ? "Unstable" : "Working";
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const platform = platformSel.value;
+      const user = document.getElementById('user').value.trim();
+      const loginType = document.getElementById('loginType').value || null;
+      const school = schoolInp.value.trim() || null;
+
+      if (!name || !platform || !user) {
+        miniStatus.textContent = "Error: Name, Platform, and Username/Email are required.";
+        return;
+      }
+
+      miniStatus.textContent = "Submitting...";
+
+      const payload = { name, platform, user, loginType, school };
+
+      try {
+        const res = await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.error || "Request failed");
+
+        miniStatus.textContent = "Submitted successfully.";
+        form.reset();
+        platformCard.style.display = "none";
+        schoolWrap.style.display = "none";
+      } catch (err) {
+        miniStatus.textContent = "Error: " + (err?.message || "Unknown error");
+      }
+
+<!-- Favicons -->
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="icon" href="/favicon.ico">
+
+<!-- Apple / iOS -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Android / PWA -->
+<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+
+.brand__mark {
+  filter:
+    drop-shadow(0 0 12px rgba(255,77,166,.35))
+    drop-shadow(0 0 28px rgba(180,120,255,.25));
+}
+
+
+    });
+  </script>
+</body>
+</html>
